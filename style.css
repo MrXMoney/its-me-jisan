@@ -1,169 +1,50 @@
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
-  color: #fff;
-  text-align: center;
-}
+/* style.css */
 
-.container {
-  padding: 30px 20px;
-  max-width: 900px;
-  margin: auto;
-}
+:root { --bg-dark: #0d0d0d; --bg-light: #ffffff; --text-dark: #ffffff; --text-light: #0d0d0d; --accent: #ff0055; --glass-bg: rgba(255, 255, 255, 0.05); --border-color: rgba(255, 255, 255, 0.1); }
 
-.logo {
-  width: 120px;
-  border-radius: 50%;
-  margin: 20px auto;
-  display: block;
-  box-shadow: 0 0 20px #ff3c3c;
-}
+body { margin: 0; font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); color: var(--text-dark); transition: background 0.4s, color 0.4s; }
 
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 10px;
-}
-.highlight {
-  color: #ff3c3c;
-}
-.subtitle {
-  font-size: 1.2em;
-  color: #ccc;
-  margin-bottom: 30px;
-}
+body.light { background-color: var(--bg-light); color: var(--text-light); }
 
-.glass-section {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.37);
-  border-radius: 15px;
-  padding: 30px;
-  margin: 30px 0;
-  transition: 0.3s ease;
-}
-.glass-section:hover {
-  transform: scale(1.01);
-}
+#themeToggle { position: fixed; top: 10px; right: 10px; background: var(--accent); color: #fff; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; z-index: 100; }
 
-h2 {
-  color: #ff3c3c;
-  margin-bottom: 15px;
-}
+.hero { height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(to right, #0f0c29, #302b63, #24243e); position: relative; text-align: center; color: white; }
 
-.card {
-  background-color: #1f1f1f;
-  margin: 10px auto;
-  padding: 15px;
-  max-width: 300px;
-  border: 1px solid #ff3c3c;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(255, 60, 60, 0.3);
-  transition: transform 0.3s;
-}
-.card:hover {
-  transform: translateY(-5px);
-}
+.hero .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); }
 
-ul {
-  list-style: none;
-  padding: 0;
-}
-li {
-  margin: 10px 0;
-}
+.hero-content { position: relative; z-index: 1; }
 
-/* Contact Section with RGB Glow and 3D Style */
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  padding: 25px;
-  border-radius: 15px;
-  background: rgba(0, 0, 0, 0.6);
-  box-shadow: 0 0 20px rgba(255, 0, 102, 0.2),
-              0 0 40px rgba(0, 255, 255, 0.2),
-              0 0 60px rgba(255, 255, 0, 0.2);
-  backdrop-filter: blur(10px);
-  animation: fadeInUp 1s ease;
-  transform-style: preserve-3d;
-}
+.profile-pic { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--accent); margin-bottom: 20px; }
 
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  max-width: 450px;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  background: #111;
-  color: #fff;
-  font-size: 1em;
-  outline: none;
-  box-shadow: 0 0 10px #ff3c3c55;
-  transition: 0.3s ease-in-out;
-}
+.accent { color: var(--accent); }
 
-.contact-form input:focus,
-.contact-form textarea:focus {
-  box-shadow: 0 0 15px #00ffee;
-  background-color: #1a1a1a;
-}
+.cta-button { background: var(--accent); color: white; padding: 12px 24px; border: none; border-radius: 24px; text-decoration: none; margin-top: 20px; display: inline-block; font-weight: 600; }
 
-.contact-form textarea {
-  height: 120px;
-  resize: none;
-}
+.glass-section { background: var(--glass-bg); border: 1px solid var(--border-color); border-radius: 16px; margin: 60px auto; max-width: 900px; padding: 40px; backdrop-filter: blur(10px); }
 
-.contact-form button {
-  padding: 12px 30px;
-  background: linear-gradient(45deg, #ff0057, #00f2ff, #fffd44);
-  background-size: 300% 300%;
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 0 20px rgba(255, 0, 102, 0.5);
-  animation: rgbGlow 3s ease infinite;
-}
+h2 { text-align: center; margin-bottom: 30px; color: var(--accent); }
 
-.contact-form button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
-}
+.card { background: #1a1a1a; padding: 20px; margin: 10px; border-radius: 12px; color: white; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); transition: transform 0.3s; }
 
-footer {
-  margin-top: 50px;
-  font-size: 0.9em;
-  color: #999;
-}
-footer a {
-  color: #ff3c3c;
-  text-decoration: none;
-}
+.skill { margin-bottom: 20px; }
 
-/* Animation Keyframes */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  } to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+.skill p { margin: 0 0 5px; }
 
-@keyframes rgbGlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
+.bar { background: #333; border-radius: 8px; overflow: hidden; height: 10px; }
+
+.bar div { background: var(--accent); height: 100%; transition: width 0.6s; }
+
+.testimonial { background: rgba(255, 255, 255, 0.1); padding: 20px; margin: 10px 0; border-radius: 10px; font-style: italic; }
+
+.contact-form { display: flex; flex-direction: column; gap: 12px; }
+
+.contact-form input, .contact-form textarea { padding: 12px; border-radius: 8px; border: 1px solid #444; background: #111; color: white; resize: vertical; }
+
+.contact-form button { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+
+footer { text-align: center; padding: 30px; background: #0a0a0a; color: #aaa; }
+
+.social-icons a img { width: 32px; margin: 0 10px; vertical-align: middle; }
+
+@media (max-width: 768px) { .glass-section { margin: 30px 16px; padding: 20px; } .profile-pic { width: 80px; height: 80px; } .cta-button { padding: 10px 20px; font-size: 14px; } }
+
