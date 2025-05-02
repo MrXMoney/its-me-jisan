@@ -2,66 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>It's Me Jisan</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <button id="themeToggle">Toggle Theme</button>
-  
   <section class="hero">
     <div class="overlay"></div>
     <div class="hero-content">
-      <img src="logo.png" alt="Jisan Logo" class="profile-pic" />
-      <h1>Hi, It's <span class="accent">Me Jisan</span></h1>
+      <img src="logo.png" alt="Jisan Logo" class="profile-pic"/>
+      <h1>Hi, I'm <span class="accent">Jisan</span></h1>
       <p class="subtitle">Web & App Developer | UI Designer</p>
       <a href="#contact" class="cta-button">Hire Me</a>
     </div>
   </section>
 
-  <section class="glass-section" id="services">
+  <section class="glass-section">
     <h2>Services</h2>
     <div class="card">UI/UX Design</div>
-    <div class="card">Apps & Web Development</div>
+    <div class="card">Web & App Development</div>
     <div class="card">Landing Page Design</div>
   </section>
 
-  <section class="glass-section" id="skills">
+  <section class="glass-section">
     <h2>Skills</h2>
-    <div class="skill"><p>HTML</p><div class="bar"><div style="width: 100%"></div></div></div>
-    <div class="skill"><p>CSS</p><div class="bar"><div style="width: 100%"></div></div></div>
-    <div class="skill"><p>JavaScript</p><div class="bar"><div style="width: 100%"></div></div></div>
-    <div class="skill"><p>Python</p><div class="bar"><div style="width: 80%"></div></div></div>
-  </section>
-
-  <section class="glass-section" id="projects">
-    <h2>Projects</h2>
-    <div class="card">Portfolio Website</div>
-    <div class="card">ToDo App</div>
+    <div class="skill">
+      <p>HTML</p>
+      <div class="bar"><div style="width: 100%"></div></div>
+    </div>
+    <div class="skill">
+      <p>CSS</p>
+      <div class="bar"><div style="width: 100%"></div></div>
+    </div>
+    <div class="skill">
+      <p>JavaScript</p>
+      <div class="bar"><div style="width: 100%"></div></div>
+    </div>
+    <div class="skill">
+      <p>Python</p>
+      <div class="bar"><div style="width: 80%"></div></div>
+    </div>
   </section>
 
   <section class="glass-section" id="contact">
-    <h2>Contact Me</h2>
+    <h2>Contact</h2>
     <form class="contact-form">
-      <input type="text" placeholder="Your Name" />
-      <input type="email" placeholder="Your Email" />
-      <textarea placeholder="Your Message" rows="5"></textarea>
-      <button type="submit">Send Message</button>
+      <input type="text" placeholder="Your Name" required/>
+      <input type="email" placeholder="Your Email" required/>
+      <textarea placeholder="Your Message" required></textarea>
+      <button type="submit">Send</button>
     </form>
   </section>
 
   <footer>
-    <p>Contact: itsmejisan@example.com</p>
-    <div class="social-icons">
-      <a href="#"><img src="assets/facebook.png" alt="FB" /></a>
-      <a href="#"><img src="assets/github.png" alt="GitHub" /></a>
-    </div>
+    <p>© 2025 Jisan. All rights reserved.</p>
   </footer>
-
-  <script>
-    const toggle = document.getElementById('themeToggle');
-    toggle.onclick = () => document.body.classList.toggle('light');
-  </script>
 </body>
 </html>
