@@ -1,24 +1,28 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   background-color: #0d0d0d;
   color: #fff;
   text-align: center;
 }
 
 .container {
-  padding: 20px;
+  padding: 30px 20px;
+  max-width: 800px;
+  margin: auto;
 }
 
 .logo {
-  width: 100px;
+  width: 120px;
   border-radius: 50%;
   margin: 20px auto;
   display: block;
+  box-shadow: 0 0 10px #ff3c3c;
 }
 
 h1 {
   font-size: 2.5em;
+  margin-bottom: 10px;
 }
 
 .highlight {
@@ -28,17 +32,16 @@ h1 {
 .subtitle {
   font-size: 1.2em;
   color: #ccc;
-  margin-bottom: 20px;
-}
-
-.social-links a {
-  margin: 0 10px;
-  color: #ff3c3c;
-  text-decoration: none;
+  margin-bottom: 30px;
 }
 
 .services, .skills {
   margin: 40px 0;
+}
+
+h2 {
+  color: #ff3c3c;
+  margin-bottom: 15px;
 }
 
 .card {
@@ -57,10 +60,15 @@ h1 {
 
 .skills li {
   margin: 10px 0;
+  color: #eee;
 }
 
 footer {
   margin-top: 50px;
   font-size: 0.9em;
   color: #999;
+}
+footer a {
+  color: #ff3c3c;
+  text-decoration: none;
 }
