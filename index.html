@@ -5,58 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>It's Me Jisan</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <div class="container">
-    <header>
-      <img src="logo.png" alt="Jisan Logo" class="logo" />
-      <h1>Hi, It's <span class="highlight">Jisan</span></h1>
+  <button id="themeToggle">Toggle Theme</button>
+  
+  <section class="hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <img src="logo.png" alt="Jisan Logo" class="profile-pic" />
+      <h1>Hi, It's <span class="accent">Me Jisan</span></h1>
       <p class="subtitle">Web & App Developer | UI Designer</p>
-    </header>
+      <a href="#contact" class="cta-button">Hire Me</a>
+    </div>
+  </section>
 
-    <section class="glass-section">
-      <h2>Services</h2>
-      <div class="card">UI/UX Design</div>
-      <div class="card">Apps & Web Development</div>
-      <div class="card">Landing Page Design</div>
-    </section>
+  <section class="glass-section" id="services">
+    <h2>Services</h2>
+    <div class="card">UI/UX Design</div>
+    <div class="card">Apps & Web Development</div>
+    <div class="card">Landing Page Design</div>
+  </section>
 
-    <section class="glass-section">
-      <h2>Skills</h2>
-      <ul>
-        <li>HTML - 100%</li>
-        <li>CSS - 100%</li>
-        <li>JavaScript - 100%</li>
-        <li>Python - 80%</li>
-      </ul>
-    </section>
+  <section class="glass-section" id="skills">
+    <h2>Skills</h2>
+    <div class="skill"><p>HTML</p><div class="bar"><div style="width: 100%"></div></div></div>
+    <div class="skill"><p>CSS</p><div class="bar"><div style="width: 100%"></div></div></div>
+    <div class="skill"><p>JavaScript</p><div class="bar"><div style="width: 100%"></div></div></div>
+    <div class="skill"><p>Python</p><div class="bar"><div style="width: 80%"></div></div></div>
+  </section>
 
-    <section class="glass-section">
-      <h2>Education</h2>
-      <div class="card">BSc in CSE - ABC University</div>
-      <div class="card">HSC - XYZ College</div>
-    </section>
+  <section class="glass-section" id="projects">
+    <h2>Projects</h2>
+    <div class="card">Portfolio Website</div>
+    <div class="card">ToDo App</div>
+  </section>
 
-    <section class="glass-section">
-      <h2>Projects</h2>
-      <div class="card">Portfolio Website</div>
-      <div class="card">E-commerce App (Flutter)</div>
-      <div class="card">Restaurant Landing Page</div>
-    </section>
+  <section class="glass-section" id="contact">
+    <h2>Contact Me</h2>
+    <form class="contact-form">
+      <input type="text" placeholder="Your Name" />
+      <input type="email" placeholder="Your Email" />
+      <textarea placeholder="Your Message" rows="5"></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
 
-    <section class="glass-section">
-      <h2>Contact Me</h2>
-      <form action="#" method="post" class="contact-form">
-        <input type="text" placeholder="Your Name" required />
-        <input type="email" placeholder="Your Email" required />
-        <textarea placeholder="Your Message" required></textarea>
-        <button type="submit">Send Message</button>
-      </form>
-    </section>
+  <footer>
+    <p>Contact: itsmejisan@example.com</p>
+    <div class="social-icons">
+      <a href="#"><img src="assets/facebook.png" alt="FB" /></a>
+      <a href="#"><img src="assets/github.png" alt="GitHub" /></a>
+    </div>
+  </footer>
 
-    <footer>
-      <p>Contact: <a href="mailto:itsmejisan@example.com">itsmejisan@example.com</a></p>
-    </footer>
-  </div>
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    toggle.onclick = () => document.body.classList.toggle('light');
+  </script>
 </body>
 </html>
