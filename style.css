@@ -1,144 +1,107 @@
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: Arial;
   background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
-  color: #fff;
-  line-height: 1.6;
+  color: white;
+  padding: 20px;
 }
-a {
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  padding: 10px 20px;
+  border-radius: 10px;
+}
+.logo {
+  height: 40px;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+nav ul li a {
+  color: white;
   text-decoration: none;
-  color: inherit;
+  font-weight: bold;
 }
 .hero {
-  position: relative;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   text-align: center;
-  background: url('') no-repeat center center/cover;
-}
-.overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-}
-.hero-content {
-  position: relative;
-  z-index: 1;
-}
-.profile-pic {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 3px solid #ff0066;
-  margin-bottom: 20px;
-  box-shadow: 0 0 20px #ff0066;
-}
-h1 {
-  font-size: 2.5rem;
-}
-.accent {
-  color: #ff0066;
+  margin: 40px 0;
 }
 .subtitle {
-  margin-top: 10px;
-  font-size: 1.2rem;
+  font-size: 1.2em;
   color: #ccc;
+  margin-top: 10px;
 }
-.cta-button {
-  margin-top: 20px;
-  display: inline-block;
-  padding: 12px 25px;
-  background: linear-gradient(45deg, #ff0066, #00f2fe);
-  border-radius: 30px;
-  font-weight: bold;
-  box-shadow: 0 0 15px rgba(255,0,102,0.5);
-  transition: 0.3s ease;
+.social-icons a {
+  margin: 0 10px;
+  color: #fff;
+  text-decoration: none;
 }
-.cta-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(0,255,255,0.6);
+section {
+  margin-top: 50px;
 }
-
-.glass-section {
-  margin: 60px auto;
-  max-width: 900px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 40px;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
-}
-.glass-section h2 {
+h2 {
+  text-align: center;
   margin-bottom: 20px;
-  color: #ff0066;
 }
-
+.cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 .card {
-  background: #1f1f1f;
-  margin: 10px auto;
+  background: rgba(255, 255, 255, 0.1);
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(255,0,102,0.3);
-  max-width: 300px;
-  transition: 0.3s ease;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(255,255,255,0.1);
+  transition: transform 0.3s;
 }
 .card:hover {
-  transform: scale(1.05);
+  transform: translateY(-5px);
+  background: rgba(255,255,255,0.2);
 }
-
-.skill {
-  margin-bottom: 15px;
-}
-.skill .bar {
-  background: #333;
-  border-radius: 30px;
-  overflow: hidden;
-  height: 10px;
-}
-.skill .bar div {
-  height: 100%;
-  background: linear-gradient(to right, #ff0066, #00f2fe);
-}
-
-.contact-form {
+form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-top: 20px;
+  max-width: 400px;
+  margin: auto;
+  gap: 10px;
 }
-.contact-form input,
-.contact-form textarea {
-  padding: 12px;
+form input, form textarea {
+  padding: 10px;
   border: none;
   border-radius: 10px;
-  font-size: 1em;
-  background: #111;
-  color: #fff;
 }
-.contact-form button {
-  padding: 12px;
+form button {
+  background: #ff007f;
   border: none;
-  border-radius: 10px;
-  background: linear-gradient(45deg, #ff0066, #00f2fe);
+  padding: 10px;
   color: white;
   font-weight: bold;
+  border-radius: 10px;
   cursor: pointer;
-  transition: 0.3s ease;
 }
-.contact-form button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(0,255,255,0.6);
-}
-
 footer {
   text-align: center;
-  padding: 30px 0;
+  margin-top: 50px;
   font-size: 0.9em;
   color: #aaa;
+}
+@media (max-width: 600px) {
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+  .cards {
+    flex-direction: column;
+    align-items: center;
+  }
 }
