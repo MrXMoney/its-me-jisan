@@ -65,37 +65,74 @@ h2 {
   transform: translateY(-5px);
 }
 
-.skills ul {
+ul {
   list-style: none;
   padding: 0;
 }
-.skills li {
+li {
   margin: 10px 0;
+}
+
+/* Contact Section with RGB Glow and 3D Style */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 25px;
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 20px rgba(255, 0, 102, 0.2),
+              0 0 40px rgba(0, 255, 255, 0.2),
+              0 0 60px rgba(255, 255, 0, 0.2);
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 1s ease;
+  transform-style: preserve-3d;
 }
 
 .contact-form input,
 .contact-form textarea {
-  width: 90%;
-  max-width: 400px;
-  margin: 10px auto;
-  display: block;
-  padding: 10px;
+  width: 100%;
+  max-width: 450px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
   background: #111;
   color: #fff;
-  border: 1px solid #ff3c3c;
-  border-radius: 8px;
+  font-size: 1em;
+  outline: none;
+  box-shadow: 0 0 10px #ff3c3c55;
+  transition: 0.3s ease-in-out;
 }
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  box-shadow: 0 0 15px #00ffee;
+  background-color: #1a1a1a;
+}
+
+.contact-form textarea {
+  height: 120px;
+  resize: none;
+}
+
 .contact-form button {
-  padding: 10px 20px;
-  background: #ff3c3c;
-  color: white;
+  padding: 12px 30px;
+  background: linear-gradient(45deg, #ff0057, #00f2ff, #fffd44);
+  background-size: 300% 300%;
+  color: #fff;
+  font-weight: bold;
   border: none;
-  border-radius: 8px;
+  border-radius: 50px;
   cursor: pointer;
-  margin-top: 10px;
+  transition: all 0.4s ease;
+  box-shadow: 0 0 20px rgba(255, 0, 102, 0.5);
+  animation: rgbGlow 3s ease infinite;
 }
+
 .contact-form button:hover {
-  background: #e03030;
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
 }
 
 footer {
@@ -106,4 +143,27 @@ footer {
 footer a {
   color: #ff3c3c;
   text-decoration: none;
+}
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  } to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rgbGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
