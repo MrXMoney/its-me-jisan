@@ -1,37 +1,66 @@
-
 body {
-    font-family: Arial, sans-serif;
-    background-color: #0e0e0e;
-    color: #ffffff;
-    text-align: center;
-    padding: 20px;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #0d0d0d;
+  color: #fff;
+  text-align: center;
 }
 
-header {
-    padding: 20px;
+.container {
+  padding: 20px;
 }
 
 .logo {
-    width: 150px;
-    height: auto;
-    margin-bottom: 20px;
+  width: 100px;
+  border-radius: 50%;
+  margin: 20px auto;
+  display: block;
+}
+
+h1 {
+  font-size: 2.5em;
+}
+
+.highlight {
+  color: #ff3c3c;
+}
+
+.subtitle {
+  font-size: 1.2em;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.social-links a {
+  margin: 0 10px;
+  color: #ff3c3c;
+  text-decoration: none;
 }
 
 .services, .skills {
-    margin: 40px 0;
+  margin: 40px 0;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+.card {
+  background-color: #1a1a1a;
+  margin: 10px auto;
+  padding: 15px;
+  max-width: 300px;
+  border: 1px solid #ff3c3c;
+  border-radius: 10px;
 }
 
-li {
-    margin: 10px 0;
+.skills ul {
+  list-style: none;
+  padding: 0;
+}
+
+.skills li {
+  margin: 10px 0;
 }
 
 footer {
-    margin-top: 50px;
-    font-size: 14px;
-    color: #aaa;
+  margin-top: 50px;
+  font-size: 0.9em;
+  color: #999;
 }
