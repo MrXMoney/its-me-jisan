@@ -1,73 +1,56 @@
-<!DOCTYPE html>
-<html lang="bn">
+<!-- index.html (User Home Page) --><!DOCTYPE html><html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>i-Bank BD</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <style>
+    .card-3d {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .card-3d:hover {
+      transform: scale(1.03);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <div class="max-w-md mx-auto p-4" id="app">
-    <h1 class="text-2xl font-bold mb-4 text-center">i-Bank BD</h1>
+<body class="bg-gray-100">
+  <div class="max-w-md mx-auto p-4">
+    <h1 class="text-2xl font-bold text-center mb-4">i-Bank BD</h1>
+    <div class="bg-white rounded-lg p-4 shadow">
+      <p><strong>নাম:</strong> <span id="user-name"></span></p>
+      <p><strong>ফোন:</strong> <span id="user-phone"></span></p>
+      <p><strong>ব্যালেন্স:</strong> ৳<span id="user-balance">0</span></p>
+    </div><div class="mt-6 space-y-4">
+  <div onclick="openRechargeForm()" class="card-3d p-4 text-center cursor-pointer">মোবাইল রিচার্জ</div>
+  <div onclick="openBankForm()" class="card-3d p-4 text-center cursor-pointer">ব্যাংক ট্রান্সফার</div>
+  <div onclick="openWalletForm()" class="card-3d p-4 text-center cursor-pointer">ওয়ালেট সার্ভিস (বিকাশ, নগদ...)</div>
+</div>
 
-    <!-- Login/Register -->
-    <div id="auth-section" class="space-y-4">
-      <input id="email" type="email" placeholder="ইমেইল" class="w-full p-2 border rounded" />
-      <input id="password" type="password" placeholder="পাসওয়ার্ড" class="w-full p-2 border rounded" />
-      <button onclick="register()" class="bg-green-500 text-white p-2 rounded w-full">রেজিস্টার</button>
-      <button onclick="login()" class="bg-blue-500 text-white p-2 rounded w-full">লগইন</button>
-    </div>
-
-    <!-- Home Page -->
-    <div id="home-section" class="hidden space-y-4">
-      <h2 class="text-xl font-semibold">হোমপেজ</h2>
-      <div class="border p-3 rounded bg-white">
-        <p><strong>ইউজার:</strong> <span id="user-email"></span></p>
-        <p><strong>অবস্থা:</strong> <span id="approval-status"></span></p>
-        <p><strong>ব্যালেন্স:</strong> <span id="user-balance">৳0</span></p>
-      </div>
-
-      <!-- Recharge -->
-      <div class="bg-white p-3 rounded">
-        <h3 class="font-semibold mb-2">মোবাইল রিচার্জ</h3>
-        <input id="recharge-number" type="text" placeholder="মোবাইল নাম্বার" class="w-full p-2 border rounded mb-2" />
-        <input id="recharge-amount" type="number" placeholder="টাকার পরিমাণ" class="w-full p-2 border rounded mb-2" />
-        <button onclick="submitRecharge()" class="bg-purple-500 text-white p-2 rounded w-full">রিকোয়েস্ট</button>
-      </div>
-
-      <!-- Bank Transfer -->
-      <div class="bg-white p-3 rounded">
-        <h3 class="font-semibold mb-2">ব্যাংক ট্রান্সফার</h3>
-        <input id="bank-name" type="text" placeholder="ব্যাংকের নাম" class="w-full p-2 border rounded mb-2" />
-        <input id="account-number" type="text" placeholder="একাউন্ট নাম্বার" class="w-full p-2 border rounded mb-2" />
-        <input id="bank-amount" type="number" placeholder="টাকার পরিমাণ" class="w-full p-2 border rounded mb-2" />
-        <button onclick="submitBank()" class="bg-yellow-500 text-white p-2 rounded w-full">রিকোয়েস্ট</button>
-      </div>
-
-      <!-- Wallet Transfer -->
-      <div class="bg-white p-3 rounded">
-        <h3 class="font-semibold mb-2">মোবাইল ওয়ালেট</h3>
-        <select id="wallet-type" class="w-full p-2 border rounded mb-2">
-          <option>বিকাশ</option>
-          <option>নগদ</option>
-          <option>রকেট</option>
-          <option>উপায়</option>
-          <option>সেলফিন</option>
-          <option>শিওরক্যাশ</option>
-          <option>এম ক্যাশ</option>
-        </select>
-        <input id="wallet-number" type="text" placeholder="নাম্বার" class="w-full p-2 border rounded mb-2" />
-        <input id="wallet-amount" type="number" placeholder="টাকার পরিমাণ" class="w-full p-2 border rounded mb-2" />
-        <button onclick="submitWallet()" class="bg-red-500 text-white p-2 rounded w-full">রিকোয়েস্ট</button>
+  </div>  <!-- Recharge Form Modal -->  <div id="recharge-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white p-4 rounded w-full max-w-sm">
+      <h2 class="text-lg font-bold mb-2">মোবাইল রিচার্জ</h2>
+      <input type="text" id="recharge-number" placeholder="মোবাইল নাম্বার" class="w-full border p-2 mb-2" />
+      <input type="number" id="recharge-amount" placeholder="টাকার পরিমাণ" class="w-full border p-2 mb-2" />
+      <select id="recharge-operator" class="w-full border p-2 mb-2">
+        <option>গ্রামীণ</option>
+        <option>রবি</option>
+        <option>এয়ারটেল</option>
+        <option>বাংলালিংক</option>
+        <option>টেলিটক</option>
+      </select>
+      <input type="password" id="recharge-pin" placeholder="সিক্রেট পিন" class="w-full border p-2 mb-2" />
+      <div class="flex justify-end space-x-2">
+        <button onclick="submitRecharge()" class="bg-green-500 text-white px-4 py-1 rounded">Submit</button>
+        <button onclick="closeRechargeForm()" class="bg-red-500 text-white px-4 py-1 rounded">Close</button>
       </div>
     </div>
-  </div>
-
-  <!-- Firebase + App Logic -->
-  <script>
+  </div>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDdQuA4izCiIYWJ3hNWLHVbglW5Ig2DHrM",
       authDomain: "i-bank-bd.firebaseapp.com",
@@ -81,90 +64,58 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    function register() {
-      const email = emailField.value;
-      const pass = passwordField.value;
-      auth.createUserWithEmailAndPassword(email, pass).then(({ user }) => {
-        db.collection("users").doc(user.uid).set({
-          email: user.email,
-          approved: false,
-          balance: 0
-        });
-        alert("রেজিস্ট্রেশন সফল, এডমিনের অনুমোদনের জন্য অপেক্ষা করুন।");
-      }).catch(err => alert(err.message));
+    // Load user profile
+    auth.onAuthStateChanged(async user => {
+      if (user) {
+        const doc = await db.collection("users").doc(user.uid).get();
+        const data = doc.data();
+        if (!data.approved) {
+          alert("আপনার একাউন্ট এখনো এপ্রুভ হয়নি");
+          auth.signOut();
+          window.location = "login.html";
+        } else {
+          document.getElementById("user-name").innerText = data.name;
+          document.getElementById("user-phone").innerText = data.phone;
+          document.getElementById("user-balance").innerText = data.balance || 0;
+        }
+      } else {
+        window.location = "login.html";
+      }
+    });
+
+    function openRechargeForm() {
+      document.getElementById("recharge-modal").classList.remove("hidden");
+    }
+    function closeRechargeForm() {
+      document.getElementById("recharge-modal").classList.add("hidden");
     }
 
-    function login() {
-      const email = emailField.value;
-      const pass = passwordField.value;
-      auth.signInWithEmailAndPassword(email, pass).then(({ user }) => {
-        db.collection("users").doc(user.uid).get().then(doc => {
-          if (doc.exists && doc.data().approved) {
-            showHome(user.uid, doc.data());
-          } else {
-            alert("এখনো এডমিন এপ্রুভ করেননি।");
-            auth.signOut();
-          }
-        });
-      }).catch(err => alert(err.message));
-    }
+    async function submitRecharge() {
+      const number = document.getElementById("recharge-number").value;
+      const amount = document.getElementById("recharge-amount").value;
+      const operator = document.getElementById("recharge-operator").value;
+      const pin = document.getElementById("recharge-pin").value;
 
-    function showHome(uid, data) {
-      document.getElementById("auth-section").classList.add("hidden");
-      document.getElementById("home-section").classList.remove("hidden");
-      document.getElementById("user-email").innerText = data.email;
-      document.getElementById("approval-status").innerText = "Approved";
-      document.getElementById("user-balance").innerText = "৳" + data.balance;
-    }
+      const user = auth.currentUser;
+      const doc = await db.collection("users").doc(user.uid).get();
+      const data = doc.data();
 
-    function submitRecharge() {
-      const uid = auth.currentUser.uid;
-      db.collection("recharges").add({
-        uid,
-        number: rechargeNumber.value,
-        amount: parseFloat(rechargeAmount.value),
+      if (pin !== data.secretPin) {
+        alert("সিক্রেট পিন ভুল!");
+        return;
+      }
+
+      await db.collection("recharges").add({
+        uid: user.uid,
+        number,
+        amount,
+        operator,
         status: "pending",
-        timestamp: new Date()
+        createdAt: new Date()
       });
-      alert("রিচার্জ রিকোয়েস্ট পাঠানো হয়েছে।");
-    }
 
-    function submitBank() {
-      const uid = auth.currentUser.uid;
-      db.collection("bankTransfers").add({
-        uid,
-        bank: bankName.value,
-        account: accountNumber.value,
-        amount: parseFloat(bankAmount.value),
-        status: "pending",
-        timestamp: new Date()
-      });
-      alert("ব্যাংক ট্রান্সফার রিকোয়েস্ট পাঠানো হয়েছে।");
+      alert("রিচার্জ রিকোয়েস্ট পাঠানো হয়েছে");
+      closeRechargeForm();
     }
-
-    function submitWallet() {
-      const uid = auth.currentUser.uid;
-      db.collection("walletTransfers").add({
-        uid,
-        type: walletType.value,
-        number: walletNumber.value,
-        amount: parseFloat(walletAmount.value),
-        status: "pending",
-        timestamp: new Date()
-      });
-      alert("ওয়ালেট ট্রান্সফার রিকোয়েস্ট পাঠানো হয়েছে।");
-    }
-
-    const emailField = document.getElementById("email");
-    const passwordField = document.getElementById("password");
-    const rechargeNumber = document.getElementById("recharge-number");
-    const rechargeAmount = document.getElementById("recharge-amount");
-    const bankName = document.getElementById("bank-name");
-    const accountNumber = document.getElementById("account-number");
-    const bankAmount = document.getElementById("bank-amount");
-    const walletType = document.getElementById("wallet-type");
-    const walletNumber = document.getElementById("wallet-number");
-    const walletAmount = document.getElementById("wallet-amount");
-  </script>
-</body>
+  </script></body>
 </html>
