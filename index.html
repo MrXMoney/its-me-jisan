@@ -1,8 +1,7 @@
-<!DOCTYPE html>
-<html lang="bn">
+<!DOCTYPE html><html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>i-Bank BD</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -11,57 +10,36 @@
 </head>
 <body class="bg-gray-100 text-center">
   <div class="max-w-md mx-auto mt-6 p-4 bg-white shadow rounded">
-    <h2 class="text-xl font-bold mb-4">স্বাগতম <span id="userName">...</span></h2>
+    <h2 class="text-xl font-bold mb-2">স্বাগতম <span id="userName">...</span></h2>
     <p class="text-sm text-gray-600 mb-1">মোবাইল: <span id="userPhone">...</span></p>
     <p class="text-sm text-gray-600">ব্যালেন্স: <span id="userBalance">৳ 0</span></p>
     <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 mt-4 rounded">লগ আউট</button>
-  </div>
-
-  <div class="max-w-md mx-auto mt-6 grid grid-cols-2 gap-4">
+  </div>  <div class="max-w-md mx-auto mt-6 grid grid-cols-2 gap-4">
     <div onclick="openRechargeForm()" class="w-[150px] h-[150px] bg-blue-100 shadow-md rounded-lg flex items-center justify-center font-bold text-center cursor-pointer transform hover:scale-105 transition">
       মোবাইল<br/>রিচার্জ
     </div>
     <div onclick="openAddBalanceForm()" class="w-[150px] h-[150px] bg-green-100 shadow-md rounded-lg flex items-center justify-center font-bold text-center cursor-pointer transform hover:scale-105 transition">
       এড<br/>ব্যালেন্স
     </div>
-  </div>
-
-  <!-- রিচার্জ ফর্ম -->
-  <div id="rechargeForm" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  </div>  <!-- এড ব্যালেন্স ফর্ম -->  <div id="addBalanceForm" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white p-6 rounded shadow-lg w-80">
-      <h2 class="text-lg font-bold mb-4 text-center">মোবাইল রিচার্জ</h2>
-      <input type="text" id="rechargeNumber" placeholder="মোবাইল নম্বর" class="w-full border p-2 mb-2 rounded" />
-      <input type="number" id="rechargeAmount" placeholder="টাকার পরিমাণ" class="w-full border p-2 mb-2 rounded" />
-      <select id="simType" class="w-full border p-2 mb-2 rounded">
-        <option value="">সিম সিলেক্ট করুন</option>
-        <option>Grameenphone</option>
-        <option>Robi</option>
-        <option>Banglalink</option>
-        <option>Teletalk</option>
-        <option>Airtel</option>
-      </select>
-      <input type="password" id="rechargePin" placeholder="আপনার পিন" class="w-full border p-2 mb-4 rounded" />
-      <div class="flex justify-between">
-        <button onclick="submitRecharge()" class="bg-blue-600 text-white px-4 py-2 rounded">সাবমিট</button>
-        <button onclick="closeRechargeForm()" class="bg-gray-400 text-white px-4 py-2 rounded">বাতিল</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- এড ব্যালেন্স ফর্ম -->
-  <div id="addBalanceForm" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white p-6 rounded shadow-lg w-80">
-      <h2 class="text-lg font-bold mb-4 text-center">এড ব্যালেন্স</h2>
-      <input type="number" id="balanceAmount" placeholder="টাকার পরিমাণ" class="w-full border p-2 mb-2 rounded" />
+      <h2 class="text-lg font-bold mb-2 text-center">এড ব্যালেন্স</h2>
+      <p class="text-sm text-left font-semibold">পেমেন্ট নাম্বার থেকে কপি করুন:</p>
+      <ul id="paymentNumbers" class="text-left text-sm mb-3"></ul>
+      <input type="text" id="senderNumber" placeholder="আপনার মোবাইল নাম্বার" class="w-full border p-2 mb-2 rounded" />
+      <input type="text" id="trxId" placeholder="ট্রানজ্যাকশন আইডি" class="w-full border p-2 mb-2 rounded" />
+      <input type="number" id="amount" placeholder="টাকার পরিমাণ" class="w-full border p-2 mb-2 rounded" />
       <input type="password" id="balancePin" placeholder="আপনার পিন" class="w-full border p-2 mb-4 rounded" />
       <div class="flex justify-between">
         <button onclick="submitAddBalance()" class="bg-green-600 text-white px-4 py-2 rounded">সাবমিট</button>
         <button onclick="closeAddBalanceForm()" class="bg-gray-400 text-white px-4 py-2 rounded">বাতিল</button>
       </div>
     </div>
-  </div>
-
-  <script>
+  </div>  <!-- মোবাইল রিচার্জ ফর্ম (placeholder) -->  <script>
+    function openRechargeForm() {
+      alert("রিচার্জ ফর্ম এখানে যোগ করা হবে।");
+    }
+  </script>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDdQuA4izCiIYWJ3hNWLHVbglW5Ig2DHrM",
       authDomain: "i-bank-bd.firebaseapp.com",
@@ -78,73 +56,21 @@
     let currentUserData;
 
     auth.onAuthStateChanged(async (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
-
+      if (!user) return (window.location.href = "login.html");
       const doc = await db.collection("users").doc(user.uid).get();
       if (!doc.exists || !doc.data().approved) {
-        alert("এডমিন এখনো আপনার একাউন্ট এপ্রুভ করেননি।");
-        auth.signOut();
-        window.location.href = "login.html";
-        return;
+        alert("এডমিন এখনো একাউন্ট এপ্রুভ করেননি");
+        return auth.signOut().then(() => (window.location.href = "login.html"));
       }
-
       currentUserData = doc.data();
       document.getElementById("userName").innerText = currentUserData.name;
       document.getElementById("userPhone").innerText = currentUserData.phone;
       document.getElementById("userBalance").innerText = "৳ " + currentUserData.balance;
+      loadPaymentNumbers();
     });
 
     function logout() {
-      auth.signOut().then(() => {
-        alert("লগ আউট সম্পন্ন হয়েছে");
-        window.location.href = "login.html";
-      });
-    }
-
-    function openRechargeForm() {
-      document.getElementById("rechargeForm").style.display = "flex";
-    }
-    function closeRechargeForm() {
-      document.getElementById("rechargeForm").style.display = "none";
-    }
-
-    async function submitRecharge() {
-      const number = document.getElementById("rechargeNumber").value;
-      const amount = parseFloat(document.getElementById("rechargeAmount").value);
-      const sim = document.getElementById("simType").value;
-      const pin = document.getElementById("rechargePin").value;
-
-      if (!number || !amount || !sim || !pin) {
-        return alert("সব তথ্য দিন।");
-      }
-
-      if (pin !== currentUserData.secretPin) {
-        return alert("ভুল পিন। লেনদেন বাতিল।");
-      }
-
-      if (amount > currentUserData.balance) {
-        return alert("পর্যাপ্ত ব্যালেন্স নেই।");
-      }
-
-      await db.collection("rechargeRequests").add({
-        userId: auth.currentUser.uid,
-        number,
-        amount,
-        sim,
-        status: "pending",
-        createdAt: new Date()
-      });
-
-      await db.collection("users").doc(auth.currentUser.uid).update({
-        balance: currentUserData.balance - amount
-      });
-
-      alert("রিচার্জ রিকোয়েস্ট পাঠানো হয়েছে।");
-      closeRechargeForm();
-      location.reload();
+      auth.signOut().then(() => (window.location.href = "login.html"));
     }
 
     function openAddBalanceForm() {
@@ -154,21 +80,41 @@
       document.getElementById("addBalanceForm").style.display = "none";
     }
 
-    async function submitAddBalance() {
-      const amount = parseFloat(document.getElementById("balanceAmount").value);
-      const pin = document.getElementById("balancePin").value;
-
-      if (!amount || !pin) return alert("সব তথ্য দিন।");
-      if (pin !== currentUserData.secretPin) return alert("ভুল পিন।");
-
-      await db.collection("users").doc(auth.currentUser.uid).update({
-        balance: currentUserData.balance + amount
-      });
-
-      alert("ব্যালেন্স যোগ হয়েছে!");
-      closeAddBalanceForm();
-      location.reload();
+    async function loadPaymentNumbers() {
+      const doc = await db.collection("settings").doc("paymentNumbers").get();
+      if (!doc.exists) return;
+      const list = doc.data();
+      let html = "";
+      for (const [key, value] of Object.entries(list)) {
+        html += `<li><b>${key}:</b> <span class='text-blue-700 cursor-pointer' onclick="copyToClipboard('${value}')">${value}</span></li>`;
+      }
+      document.getElementById("paymentNumbers").innerHTML = html;
     }
-  </script>
-</body>
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text);
+      alert("কপি হয়েছে: " + text);
+    }
+
+    async function submitAddBalance() {
+      const sender = document.getElementById("senderNumber").value;
+      const trx = document.getElementById("trxId").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+      const pin = document.getElementById("balancePin").value;
+      if (!sender || !trx || !amount || !pin) return alert("সব তথ্য দিন");
+      if (pin !== currentUserData.secretPin) return alert("ভুল পিন");
+
+      await db.collection("addBalanceRequests").add({
+        userId: auth.currentUser.uid,
+        phone: currentUserData.phone,
+        sender,
+        trx,
+        amount,
+        status: "pending",
+        createdAt: new Date()
+      });
+      alert("এড ব্যালেন্স রিকোয়েস্ট পাঠানো হয়েছে");
+      closeAddBalanceForm();
+    }
+  </script></body>
 </html>
