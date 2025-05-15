@@ -3,85 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f1f1f1;
-      padding: 20px;
-    }
-    .card {
-      background: white;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #ccc;
-    }
-    .card input, .card select {
-      display: block;
-      width: 100%;
-      padding: 8px;
-      margin-top: 8px;
-      margin-bottom: 12px;
-    }
-    .card button {
-      background: green;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-    }
-    #adminPanel {
-      display: none;
-    }
-    #passwordPrompt {
-      text-align: center;
-      margin-top: 100px;
-    }
-    #passwordPrompt input {
-      padding: 10px;
-      width: 200px;
-    }
-    #passwordPrompt button {
-      padding: 10px 15px;
-      margin-top: 10px;
-    }
-  </style>
+  <title>Admin Panel - i-Bank BD</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-800">
+  <div class="max-w-xl mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4 text-center">Admin Panel - i-Bank BD</h1>
 
-  <!-- Password Prompt -->
-  <div id="passwordPrompt">
-    <h3>অ্যাডমিন প্যানেলে প্রবেশের জন্য পাসওয়ার্ড দিন</h3>
-    <input type="password" id="adminPass" placeholder="পাসওয়ার্ড দিন" />
-    <br>
-    <button onclick="checkPassword()">এন্টার করুন</button>
-  </div>
-
-  <!-- Actual Admin Panel -->
-  <div id="adminPanel">
-    <h2>অ্যাডমিন প্যানেল</h2>
-
-    <h3>পেমেন্ট নাম্বার আপডেট করুন</h3>
-    <div class="card">
-      <label>bKash Number</label>
-      <input id="bkash" type="text" />
-      <label>Nagad Number</label>
-      <input id="nagad" type="text" />
-      <label>Rocket Number</label>
-      <input id="rocket" type="text" />
-      <label>Upay Number</label>
-      <input id="upay" type="text" />
-      <button onclick="updateNumbers()">সংরক্ষণ করুন</button>
+    <div class="mb-6">
+      <h2 class="text-lg font-semibold mb-2">অপেক্ষমান ইউজারসমূহ</h2>
+      <div id="pending-users" class="space-y-2"></div>
     </div>
 
-    <h3>ইউজার তালিকা</h3>
-    <div id="userList"></div>
+    <div>
+      <h2 class="text-lg font-semibold mb-2">এপ্রুভড ইউজারসমূহ</h2>
+      <div id="approved-users" class="space-y-2"></div>
+    </div>
   </div>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
   <script>
     const firebaseConfig = {
@@ -96,78 +37,42 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    function checkPassword() {
-      const input = document.getElementById("adminPass").value;
-      const correctPassword = "22558800";
-      if (input === correctPassword) {
-        document.getElementById("passwordPrompt").style.display = "none";
-        document.getElementById("adminPanel").style.display = "block";
-        loadPaymentNumbers();
-        loadUsers();
-      } else {
-        alert("ভুল পাসওয়ার্ড!");
-      }
-    }
-
-    function updateNumbers() {
-      const data = {
-        bKash: document.getElementById("bkash").value,
-        Nagad: document.getElementById("nagad").value,
-        Rocket: document.getElementById("rocket").value,
-        Upay: document.getElementById("upay").value
-      };
-      db.collection("settings").doc("paymentNumbers").set(data)
-        .then(() => alert("পেমেন্ট নাম্বার সংরক্ষণ হয়েছে"));
-    }
-
-    function loadPaymentNumbers() {
-      db.collection("settings").doc("paymentNumbers").get().then(doc => {
-        if (doc.exists) {
-          const data = doc.data();
-          document.getElementById("bkash").value = data.bKash || "";
-          document.getElementById("nagad").value = data.Nagad || "";
-          document.getElementById("rocket").value = data.Rocket || "";
-          document.getElementById("upay").value = data.Upay || "";
-        }
-      });
-    }
-
     function loadUsers() {
-      db.collection("users").get().then(snapshot => {
-        const container = document.getElementById("userList");
-        container.innerHTML = "";
+      const pendingDiv = document.getElementById("pending-users");
+      const approvedDiv = document.getElementById("approved-users");
+
+      db.collection("users").onSnapshot(snapshot => {
+        pendingDiv.innerHTML = "";
+        approvedDiv.innerHTML = "";
+
         snapshot.forEach(doc => {
-          const user = doc.data();
+          const data = doc.data();
           const div = document.createElement("div");
-          div.className = "card";
+          div.className = "p-3 bg-white border rounded flex justify-between items-center";
           div.innerHTML = `
-            <strong>${user.name}</strong> (${user.phone})<br>
-            Gmail: ${user.gmail || "N/A"}<br>
-            Balance: <input type="number" value="${user.balance}" id="balance-${doc.id}">
-            Pin: <input type="text" value="${user.secretPin}" id="pin-${doc.id}">
-            Approved:
-            <select id="approved-${doc.id}">
-              <option value="true" ${user.approved ? "selected" : ""}>Yes</option>
-              <option value="false" ${!user.approved ? "selected" : ""}>No</option>
-            </select>
-            <button onclick="updateUser('${doc.id}')">Update</button>
+            <div>
+              <p><strong>${data.email}</strong></p>
+              <p>Balance: ৳${data.balance || 0}</p>
+            </div>
           `;
-          container.appendChild(div);
+
+          if (data.approved) {
+            approvedDiv.appendChild(div);
+          } else {
+            const btn = document.createElement("button");
+            btn.innerText = "Approve";
+            btn.className = "bg-green-500 text-white px-3 py-1 rounded";
+            btn.onclick = () => {
+              db.collection("users").doc(doc.id).update({ approved: true });
+            };
+            div.appendChild(btn);
+            pendingDiv.appendChild(div);
+          }
         });
       });
     }
 
-    function updateUser(id) {
-      const balance = parseFloat(document.getElementById(`balance-${id}`).value);
-      const pin = document.getElementById(`pin-${id}`).value;
-      const approved = document.getElementById(`approved-${id}`).value === "true";
-      db.collection("users").doc(id).update({
-        balance: balance,
-        secretPin: pin,
-        approved: approved
-      }).then(() => alert("User Updated"));
-    }
+    window.onload = loadUsers;
   </script>
-
 </body>
 </html>
