@@ -31,13 +31,37 @@
       border: none;
       border-radius: 5px;
     }
+    #adminPanel {
+      display: none;
+    }
+    #passwordPrompt {
+      text-align: center;
+      margin-top: 100px;
+    }
+    #passwordPrompt input {
+      padding: 10px;
+      width: 200px;
+    }
+    #passwordPrompt button {
+      padding: 10px 15px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
 
-  <h2>অ্যাডমিন প্যানেল</h2>
+  <!-- Password Prompt -->
+  <div id="passwordPrompt">
+    <h3>অ্যাডমিন প্যানেলে প্রবেশের জন্য পাসওয়ার্ড দিন</h3>
+    <input type="password" id="adminPass" placeholder="পাসওয়ার্ড দিন" />
+    <br>
+    <button onclick="checkPassword()">এন্টার করুন</button>
+  </div>
 
-  <div id="adminPanel" style="display:none;">
+  <!-- Actual Admin Panel -->
+  <div id="adminPanel">
+    <h2>অ্যাডমিন প্যানেল</h2>
+
     <h3>পেমেন্ট নাম্বার আপডেট করুন</h3>
     <div class="card">
       <label>bKash Number</label>
@@ -57,7 +81,6 @@
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
   <script>
@@ -71,24 +94,20 @@
       measurementId: "G-CQWXB3KLWJ"
     };
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Admin Access Check
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        const doc = await db.collection("users").doc(user.uid).get();
-        if (doc.exists && doc.data().isAdmin) {
-          document.getElementById("adminPanel").style.display = "block";
-          loadPaymentNumbers();
-          loadUsers();
-        } else {
-          window.location.href = "index.html";
-        }
+    function checkPassword() {
+      const input = document.getElementById("adminPass").value;
+      const correctPassword = "22558800";
+      if (input === correctPassword) {
+        document.getElementById("passwordPrompt").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        loadPaymentNumbers();
+        loadUsers();
       } else {
-        window.location.href = "login.html";
+        alert("ভুল পাসওয়ার্ড!");
       }
-    });
+    }
 
     function updateNumbers() {
       const data = {
@@ -98,7 +117,7 @@
         Upay: document.getElementById("upay").value
       };
       db.collection("settings").doc("paymentNumbers").set(data)
-        .then(() => alert("Payment numbers updated"));
+        .then(() => alert("পেমেন্ট নাম্বার সংরক্ষণ হয়েছে"));
     }
 
     function loadPaymentNumbers() {
@@ -146,7 +165,7 @@
         balance: balance,
         secretPin: pin,
         approved: approved
-      }).then(() => alert("User updated successfully"));
+      }).then(() => alert("User Updated"));
     }
   </script>
 
