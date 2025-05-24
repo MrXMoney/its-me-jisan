@@ -1,28 +1,40 @@
-<!-- MyCash User Panel: index.html --><!DOCTYPE html><html lang="en">
+<!-- MyCash User Panel: index.html with Custom Signup/Login --><!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MyCash - Earn Money</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <div id="app">
-    <h1>Welcome to MyCash</h1>
-    <button id="loginBtn">Login with Google</button>
-    <div id="dashboard" style="display: none;">
-      <h2>Your Balance: <span id="balance">0</span>৳</h2>
-      <div id="taskCards"></div>
-      <button onclick="showWithdrawForm()">Withdraw</button>
-    </div>
-    <div id="withdrawForm" style="display: none;">
-      <input type="text" id="method" placeholder="Method (bKash/Nagad)" />
-      <input type="text" id="number" placeholder="Your Number" />
-      <input type="number" id="amount" placeholder="Amount" />
-      <button onclick="submitWithdraw()">Submit</button>
-    </div>
+    <h1>Welcome to MyCash</h1><div id="authForms">
+  <h2>Register</h2>
+  <input type="text" id="regName" placeholder="Full Name" />
+  <input type="text" id="regUsername" placeholder="Username" />
+  <input type="text" id="regPhone" placeholder="Phone Number" />
+  <input type="password" id="regPassword" placeholder="Password" />
+  <button onclick="registerUser()">Sign Up</button>
+
+  <h2>Login</h2>
+  <input type="text" id="loginPhone" placeholder="Phone Number" />
+  <input type="password" id="loginPassword" placeholder="Password" />
+  <button onclick="loginUser()">Login</button>
+</div>
+
+<div id="dashboard" style="display: none;">
+  <h2>Your Balance: <span id="balance">0</span>৳</h2>
+  <button onclick="showWithdrawForm()">Withdraw</button>
+</div>
+
+<div id="withdrawForm" style="display: none;">
+  <input type="text" id="method" placeholder="Method (bKash/Nagad)" />
+  <input type="text" id="number" placeholder="Your Number" />
+  <input type="number" id="amount" placeholder="Amount" />
+  <button onclick="submitWithdraw()">Submit</button>
+</div>
+
   </div>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDdQuA4izCiIYWJ3hNWLHVbglW5Ig2DHrM",
@@ -35,32 +47,41 @@
       measurementId: "G-CQWXB3KLWJ"
     };
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.firestore();
 
-    const loginBtn = document.getElementById("loginBtn");
-    const dashboard = document.getElementById("dashboard");
-    const balanceText = document.getElementById("balance");
+    let currentUserId = null;
 
-    loginBtn.onclick = async () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      const result = await auth.signInWithPopup(provider);
-      const user = result.user;
-      const userRef = db.collection("users").doc(user.uid);
-      const doc = await userRef.get();
-      if (!doc.exists) {
-        await userRef.set({ name: user.displayName, balance: 0 });
-      }
-      loadDashboard(user.uid);
-    };
+    async function registerUser() {
+      const name = document.getElementById("regName").value;
+      const username = document.getElementById("regUsername").value;
+      const phone = document.getElementById("regPhone").value;
+      const password = document.getElementById("regPassword").value;
 
-    async function loadDashboard(uid) {
-      loginBtn.style.display = "none";
-      dashboard.style.display = "block";
-      const userRef = db.collection("users").doc(uid);
-      const doc = await userRef.get();
-      const balance = doc.data().balance;
-      balanceText.innerText = balance;
+      const existing = await db.collection("users").where("phone", "==", phone).get();
+      if (!existing.empty) return alert("User already exists!");
+
+      const newUser = await db.collection("users").add({
+        name,
+        username,
+        phone,
+        password,
+        balance: 0
+      });
+      alert("Registration successful! Now log in.");
+    }
+
+    async function loginUser() {
+      const phone = document.getElementById("loginPhone").value;
+      const password = document.getElementById("loginPassword").value;
+      const snapshot = await db.collection("users").where("phone", "==", phone).where("password", "==", password).get();
+
+      if (snapshot.empty) return alert("Login failed. Check credentials.");
+
+      const doc = snapshot.docs[0];
+      currentUserId = doc.id;
+      document.getElementById("authForms").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      document.getElementById("balance").innerText = doc.data().balance;
     }
 
     async function showWithdrawForm() {
@@ -71,10 +92,10 @@
       const method = document.getElementById("method").value;
       const number = document.getElementById("number").value;
       const amount = parseInt(document.getElementById("amount").value);
-      const user = auth.currentUser;
-      if (!user || !method || !number || isNaN(amount)) return;
+      if (!currentUserId || !method || !number || isNaN(amount)) return;
+
       await db.collection("withdraw_requests").add({
-        uid: user.uid,
+        uid: currentUserId,
         method,
         number,
         amount,
