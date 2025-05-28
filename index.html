@@ -1,108 +1,17 @@
-<!-- MyCash User Panel: index.html with Custom Signup/Login --><!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyCash - Earn Money</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <title>Login</title>
+  <script type="module" src="js/login.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div id="app">
-    <h1>Welcome to MyCash</h1><div id="authForms">
-  <h2>Register</h2>
-  <input type="text" id="regName" placeholder="Full Name" />
-  <input type="text" id="regUsername" placeholder="Username" />
-  <input type="text" id="regPhone" placeholder="Phone Number" />
-  <input type="password" id="regPassword" placeholder="Password" />
-  <button onclick="registerUser()">Sign Up</button>
-
-  <h2>Login</h2>
-  <input type="text" id="loginPhone" placeholder="Phone Number" />
-  <input type="password" id="loginPassword" placeholder="Password" />
-  <button onclick="loginUser()">Login</button>
-</div>
-
-<div id="dashboard" style="display: none;">
-  <h2>Your Balance: <span id="balance">0</span>৳</h2>
-  <button onclick="showWithdrawForm()">Withdraw</button>
-</div>
-
-<div id="withdrawForm" style="display: none;">
-  <input type="text" id="method" placeholder="Method (bKash/Nagad)" />
-  <input type="text" id="number" placeholder="Your Number" />
-  <input type="number" id="amount" placeholder="Amount" />
-  <button onclick="submitWithdraw()">Submit</button>
-</div>
-
-  </div>  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDdQuA4izCiIYWJ3hNWLHVbglW5Ig2DHrM",
-      authDomain: "i-bank-bd.firebaseapp.com",
-      databaseURL: "https://i-bank-bd-default-rtdb.firebaseio.com",
-      projectId: "i-bank-bd",
-      storageBucket: "i-bank-bd.firebasestorage.app",
-      messagingSenderId: "815383083283",
-      appId: "1:815383083283:web:6ea26839b3a0bf22a982e6",
-      measurementId: "G-CQWXB3KLWJ"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    let currentUserId = null;
-
-    async function registerUser() {
-      const name = document.getElementById("regName").value;
-      const username = document.getElementById("regUsername").value;
-      const phone = document.getElementById("regPhone").value;
-      const password = document.getElementById("regPassword").value;
-
-      const existing = await db.collection("users").where("phone", "==", phone).get();
-      if (!existing.empty) return alert("User already exists!");
-
-      const newUser = await db.collection("users").add({
-        name,
-        username,
-        phone,
-        password,
-        balance: 0
-      });
-      alert("Registration successful! Now log in.");
-    }
-
-    async function loginUser() {
-      const phone = document.getElementById("loginPhone").value;
-      const password = document.getElementById("loginPassword").value;
-      const snapshot = await db.collection("users").where("phone", "==", phone).where("password", "==", password).get();
-
-      if (snapshot.empty) return alert("Login failed. Check credentials.");
-
-      const doc = snapshot.docs[0];
-      currentUserId = doc.id;
-      document.getElementById("authForms").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-      document.getElementById("balance").innerText = doc.data().balance;
-    }
-
-    async function showWithdrawForm() {
-      document.getElementById("withdrawForm").style.display = "block";
-    }
-
-    async function submitWithdraw() {
-      const method = document.getElementById("method").value;
-      const number = document.getElementById("number").value;
-      const amount = parseInt(document.getElementById("amount").value);
-      if (!currentUserId || !method || !number || isNaN(amount)) return;
-
-      await db.collection("withdraw_requests").add({
-        uid: currentUserId,
-        method,
-        number,
-        amount,
-        status: "pending",
-        time: new Date().toISOString()
-      });
-      alert("Withdraw request submitted");
-    }
-  </script></body>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="bg-white p-6 rounded-xl shadow-md w-96">
+    <h2 class="text-2xl font-bold mb-4">Login</h2>
+    <input type="email" id="email" placeholder="Email" class="mb-2 w-full p-2 border rounded" />
+    <input type="password" id="password" placeholder="Password" class="mb-4 w-full p-2 border rounded" />
+    <button id="loginBtn" class="w-full bg-green-500 text-white p-2 rounded">Login</button>
+    <p class="text-sm mt-3">Don't have an account? <a href="signup.html" class="text-blue-600">Sign up</a></p>
+  </div>
+</body>
 </html>
