@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Birthday Sohan!</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1000px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      transform-style: preserve-3d;
+      animation: rotate 10s linear infinite;
+      backdrop-filter: blur(10px);
+    }
+
+    .birthday-text {
+      font-size: 2.5em;
+      color: #fff;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+    .name {
+      font-size: 2em;
+      color: #ffe600;
+      margin-top: 10px;
+    }
+
+    .message {
+      font-size: 1.2em;
+      color: #ffffffcc;
+      margin-top: 20px;
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotateY(0deg);
+      }
+      to {
+        transform: rotateY(360deg);
+      }
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1 class="birthday-text">🎉 Happy Birthday 🎉</h1>
+      <h2 class="name">Samiul Islam Sohan</h2>
+      <p class="message">Wishing you a day filled with love, laughter, and joy. Have a fantastic year ahead!</p>
+    </div>
+    <canvas id="fireworks"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("fireworks");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let fireworks = [];
+
+    function Firework() {
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height;
+      this.radius = 2;
+      this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+      this.velocity = {
+        x: (Math.random() - 0.5) * 6,
+        y: Math.random() * -10 - 10
+      };
+      this.gravity = 0.2;
+    }
+
+    Firework.prototype.update = function () {
+      this.velocity.y += this.gravity;
+      this.x += this.velocity.x;
+      this.y += this.velocity.y;
+    };
+
+    Firework.prototype.draw = function () {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+    };
+
+    function animate() {
+      requestAnimationFrame(animate);
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (Math.random() < 0.05) {
+        fireworks.push(new Firework());
+      }
+
+      fireworks.forEach((fw, index) => {
+        fw.update();
+        fw.draw();
+
+        if (fw.y > canvas.height) {
+          fireworks.splice(index, 1);
+        }
+      });
+    }
+
+    animate();
+  </script>
+</body>
+</html>
