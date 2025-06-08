@@ -4,91 +4,164 @@
   <meta charset="UTF-8">
   <title>Happy Birthday Samiul!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      background: linear-gradient(to right, #f953c6, #b91d73);
-      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top left, #ff9a9e, #fad0c4);
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
     }
 
-    .card {
+    .card, .cake {
       background: white;
-      padding: 30px 40px;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      padding: 40px;
+      border-radius: 30px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
       text-align: center;
-      transform: rotateY(0deg);
-      animation: flipIn 2s ease-out;
+      animation: floatIn 1.5s ease-out forwards;
+      transform: translateY(-50px);
+      opacity: 0;
+      z-index: 2;
+      position: relative;
     }
 
-    @keyframes flipIn {
-      from {
-        transform: rotateY(90deg);
-        opacity: 0;
-      }
+    @keyframes floatIn {
       to {
-        transform: rotateY(0deg);
+        transform: translateY(0);
         opacity: 1;
       }
     }
 
     h1 {
-      color: #b91d73;
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      animation: bounce 2s infinite;
+      color: #ff4081;
+      font-size: 2.8rem;
+      font-family: 'Pacifico', cursive;
+      animation: textPop 1.5s ease-out forwards;
     }
 
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0);}
-      50% { transform: translateY(-10px);}
+    h2 {
+      color: #333;
+      font-size: 2rem;
+      margin-top: 10px;
     }
 
     p {
-      color: #444;
-      font-size: 1.1rem;
-      margin-top: 0;
+      font-size: 1.2rem;
+      color: #555;
+      margin-top: 10px;
     }
 
-    .confetti {
+    @keyframes textPop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .balloon {
       position: absolute;
-      width: 10px;
-      height: 10px;
-      background-color: gold;
-      animation: fall 3s infinite linear;
+      bottom: -150px;
+      width: 50px;
+      height: 70px;
+      background-color: #ff8a65;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: floatBalloon 8s linear infinite;
+      cursor: pointer;
+      z-index: 0;
     }
 
-    @keyframes fall {
-      0% { transform: translateY(-10px) rotate(0deg); opacity: 1;}
-      100% { transform: translateY(100vh) rotate(360deg); opacity: 0;}
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      width: 2px;
+      height: 20px;
+      background: #555;
+      transform: translateX(-50%);
+    }
+
+    @keyframes floatBalloon {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-120vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    audio {
+      display: none;
+    }
+
+    .cake {
+      width: 300px;
+      height: 300px;
+      background: url('https://i.imgur.com/3XnWf2v.png') no-repeat center center;
+      background-size: contain;
+      border: none;
+      box-shadow: none;
+      cursor: pointer;
+      animation: popIn 1.5s ease;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
+  <!-- 🎶 Background Music -->
+  <audio autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- 🎂 Birthday Cake -->
+  <div class="cake" id="cake" onclick="revealWish()"></div>
+
+  <!-- 🎉 Birthday Wish Card -->
+  <div class="card hidden" id="wishCard">
     <h1>🎉 Happy Birthday 🎂</h1>
     <h2>Samiul Islam Sohan</h2>
-    <p>May your day be filled with joy, laughter, and love! 🥳</p>
+    <p>Wishing you a day filled with love, joy, and beautiful memories! 🌟</p>
   </div>
 
-  <!-- Confetti Generator -->
+  <!-- 🎈 Floating Balloons -->
   <script>
-    const colors = ['#ff0', '#f0f', '#0ff', '#fff', '#0f0', '#f00'];
-    for (let i = 0; i < 50; i++) {
-      const confetti = document.createElement('div');
-      confetti.className = 'confetti';
-      confetti.style.left = Math.random() * 100 + 'vw';
-      confetti.style.top = Math.random() * -100 + 'px';
-      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      confetti.style.animationDuration = 2 + Math.random() * 3 + 's';
-      confetti.style.opacity = Math.random();
-      document.body.appendChild(confetti);
+    const colors = ['#ff8a65', '#4fc3f7', '#ba68c8', '#ffd54f', '#81c784'];
+    for (let i = 0; i < 30; i++) {
+      const balloon = document.createElement('div');
+      balloon.className = 'balloon';
+      balloon.style.left = Math.random() * 100 + 'vw';
+      balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      balloon.style.animationDelay = (Math.random() * 5) + 's';
+
+      // 🎈 Balloon Pop Animation
+      balloon.addEventListener('click', () => {
+        balloon.style.transition = 'transform 0.2s ease, opacity 0.2s';
+        balloon.style.transform = 'scale(1.5)';
+        balloon.style.opacity = '0';
+        setTimeout(() => balloon.remove(), 200);
+      });
+
+      document.body.appendChild(balloon);
+    }
+
+    // 🎂 Reveal Wish Card
+    function revealWish() {
+      document.getElementById('cake').classList.add('hidden');
+      document.getElementById('wishCard').classList.remove('hidden');
     }
   </script>
 
