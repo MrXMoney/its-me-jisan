@@ -1,39 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Monetag App</title>
-
-  <!-- Firebase SDK -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDy0QLtpLlzpAagSFtBW0J01jDmPTj3dns",
-      authDomain: "rintiloveyou-6c20f.firebaseapp.com",
-      databaseURL: "https://rintiloveyou-6c20f-default-rtdb.firebaseio.com",
-      projectId: "rintiloveyou-6c20f",
-      storageBucket: "rintiloveyou-6c20f.appspot.com",
-      messagingSenderId: "544938645122",
-      appId: "1:544938645122:web:2697a58c2410e63e65c69b"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-  </script>
-
   <style>
-    body { background: #121212; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
+    body { background: #121212; color: white; font-family: sans-serif; margin: 0; padding: 0; }
     .view { display: none; padding: 20px; max-width: 500px; margin: auto; }
     .view.active { display: block; }
-
     input, select, button {
       width: 100%; padding: 12px; margin-top: 10px;
-      border-radius: 8px; border: none;
-      font-size: 16px;
+      border-radius: 8px; border: none; font-size: 16px;
     }
     .btn { background: #00ff80; color: black; font-weight: bold; transition: 0.3s; }
     .btn:hover { background: #00cc66; }
@@ -42,14 +22,26 @@
       background: #1f1f1f; padding: 20px;
       border-radius: 12px; margin-top: 15px;
       box-shadow: 0 4px 8px #0005;
-      text-align: center;
     }
     ul { padding-left: 20px; text-align: left; }
+
+    .pay-card {
+      background: #222; padding: 15px;
+      border-left: 4px solid #00ff80;
+      border-radius: 10px; margin-bottom: 12px;
+    }
+    .copy-btn {
+      background: #00ff80; color: black;
+      padding: 6px 12px; border-radius: 6px;
+      border: none; font-weight: bold;
+      margin-left: 10px; cursor: pointer;
+    }
+    .copy-btn:hover { background: #00cc66; }
   </style>
 </head>
 <body>
 
-<!-- Login View -->
+<!-- Login -->
 <div id="login-view" class="view active">
   <h2>🔐 Login</h2>
   <input id="login-email" placeholder="Email">
@@ -58,7 +50,7 @@
   <p><a href="#" onclick="showView('register-view')">Create account</a></p>
 </div>
 
-<!-- Register View -->
+<!-- Register -->
 <div id="register-view" class="view">
   <h2>📝 Register</h2>
   <input id="reg-name" placeholder="Your Name">
@@ -68,31 +60,29 @@
   <p><a href="#" onclick="showView('login-view')">Back to login</a></p>
 </div>
 
-<!-- Home View -->
+<!-- Dashboard -->
 <div id="home-view" class="view">
   <h2>👋 Welcome, <span id="user-name">User</span></h2>
-  <p>Status: <span id="user-status">Loading...</span></p>
-
+  <p>Status: <span id="user-status">...</span></p>
   <div class="card"><h3>💰 Balance</h3><p>$<span id="user-balance">0.00</span></p></div>
   <div class="card"><h3>⭐ Points</h3><p><span id="user-points">0</span> pts</p></div>
   <div class="card">
-    <button class="btn" onclick="showView('tasks-view')">🎯 Do Task</button>
+    <button class="btn" onclick="showView('tasks-view')">🎯 Task</button>
     <button class="btn" onclick="showView('withdraw-view')">💸 Withdraw</button>
-    <button class="btn" onclick="showView('activation-view')" id="activate-btn" style="display:none;">🟢 Activate</button>
-    <button class="btn" onclick="showHistory()">📜 History</button>
+    <button class="btn" id="activate-btn" onclick="handleActivationClick()">🟢 Activate</button>
     <button class="btn danger" onclick="logout()">🚪 Logout</button>
   </div>
 </div>
 
-<!-- Task View -->
+<!-- Task -->
 <div id="tasks-view" class="view">
-  <h3>🎯 Complete Task</h3>
-  <p>Earn 1 point per click</p>
-  <button class="btn" onclick="completeTask()">✅ Earn</button>
+  <h3>🎯 Do Task</h3>
+  <p>Click to earn point</p>
+  <button class="btn" onclick="completeTask()">✅ Earn Point</button>
   <button class="btn" onclick="showView('home-view')">← Back</button>
 </div>
 
-<!-- Withdraw View -->
+<!-- Withdraw -->
 <div id="withdraw-view" class="view">
   <h3>💸 Withdraw</h3>
   <input id="wd-number" placeholder="Your Number">
@@ -100,6 +90,7 @@
     <option value="bKash">bKash</option>
     <option value="Nagad">Nagad</option>
     <option value="Rocket">Rocket</option>
+    <option value="Upay">Upay</option>
   </select>
   <button class="btn" onclick="submitWithdraw()">Submit</button>
   <button class="btn" onclick="showView('home-view')">← Back</button>
@@ -108,7 +99,31 @@
 <!-- Activation View -->
 <div id="activation-view" class="view">
   <h3>🟢 Activate Account</h3>
-  <p>Send ৫০৳ to bKash: <b>01XXXXXXXXXX</b></p>
+
+  <div class="pay-card">
+    <h3>📱 bKash</h3>
+    <p><span id="bkash-num">Loading...</span>
+    <button onclick="copyNumber('bkash-num')" class="copy-btn">📋 Copy</button></p>
+  </div>
+
+  <div class="pay-card">
+    <h3>📱 Nagad</h3>
+    <p><span id="nagad-num">Loading...</span>
+    <button onclick="copyNumber('nagad-num')" class="copy-btn">📋 Copy</button></p>
+  </div>
+
+  <div class="pay-card">
+    <h3>📱 Rocket</h3>
+    <p><span id="rocket-num">Loading...</span>
+    <button onclick="copyNumber('rocket-num')" class="copy-btn">📋 Copy</button></p>
+  </div>
+
+  <div class="pay-card">
+    <h3>📱 Upay</h3>
+    <p><span id="upay-num">Loading...</span>
+    <button onclick="copyNumber('upay-num')" class="copy-btn">📋 Copy</button></p>
+  </div>
+
   <input id="sender-number" placeholder="Sender Number">
   <input id="txn-id" placeholder="Transaction ID">
   <input id="amount" placeholder="Amount">
@@ -116,14 +131,20 @@
   <button class="btn" onclick="showView('home-view')">← Back</button>
 </div>
 
-<!-- History View -->
-<div id="history-view" class="view">
-  <h3>📜 Withdraw History</h3>
-  <ul id="history-list"></ul>
-  <button class="btn" onclick="showView('home-view')">← Back</button>
-</div>
-
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDy0QLtpLlzpAagSFtBW0J01jDmPTj3dns",
+  authDomain: "rintiloveyou-6c20f.firebaseapp.com",
+  databaseURL: "https://rintiloveyou-6c20f-default-rtdb.firebaseio.com",
+  projectId: "rintiloveyou-6c20f",
+  storageBucket: "rintiloveyou-6c20f.appspot.com",
+  messagingSenderId: "544938645122",
+  appId: "1:544938645122:web:2697a58c2410e63e65c69b"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
 let currentUID = "", isActive = false;
 
 function showView(id) {
@@ -139,8 +160,7 @@ function register() {
   auth.createUserWithEmailAndPassword(email, pass).then(res => {
     db.ref("users/" + res.user.uid).set({
       name, email, points: 0, balance: 0,
-      isActive: false,
-      referredBy: ref || null,
+      isActive: false, referredBy: ref || null,
       createdAt: Date.now()
     });
     currentUID = res.user.uid;
@@ -175,11 +195,11 @@ function showHome(uid) {
 }
 
 function completeTask() {
-  if (!isActive) return alert("Please activate your account.");
+  if (!isActive) return alert("Please activate account first.");
   db.ref("users/" + currentUID).once("value").then(snap => {
-    const newPts = (snap.val().points || 0) + 1;
-    db.ref("users/" + currentUID).update({ points: newPts });
-    alert("✅ Point Added!");
+    let pts = (snap.val().points || 0) + 1;
+    db.ref("users/" + currentUID).update({ points: pts });
+    alert("✅ 1 point added!");
     showHome(currentUID);
   });
 }
@@ -189,20 +209,36 @@ function submitWithdraw() {
   const method = document.getElementById("wd-method").value;
   db.ref("users/" + currentUID).once("value").then(snap => {
     const u = snap.val();
-    if (!u.isActive) return alert("Activate account first.");
+    if (!u.isActive) return alert("Account not active.");
     if ((u.points || 0) < 50) return alert("Need 50+ points.");
-    const msg = `💸 *Withdraw Request*\n👤 ${u.name}\n📞 ${number}\n💳 ${method}\n⭐ ${u.points} pts`;
-    fetch(`https://api.telegram.org/bot7816709016:AAE3R4c3mX0fX1qE_QF2MwumGS0cAsWbpyg/sendMessage`, {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: "6374591042", text: msg, parse_mode: "Markdown" })
-    });
     db.ref("withdraws/" + currentUID).push().set({
       number, method, points: u.points, date: new Date().toLocaleString()
     });
     db.ref("users/" + currentUID).update({ points: 0 });
-    alert("✅ Request Sent");
+    alert("✅ Request sent.");
     showHome(currentUID);
+  });
+}
+
+function handleActivationClick() {
+  loadPaymentNumberUI();
+  showView("activation-view");
+}
+
+function loadPaymentNumberUI() {
+  db.ref("settings/paymentNumbers").once("value").then(snap => {
+    const data = snap.val() || {};
+    document.getElementById("bkash-num").innerText = data.bkash || "Not set";
+    document.getElementById("nagad-num").innerText = data.nagad || "Not set";
+    document.getElementById("rocket-num").innerText = data.rocket || "Not set";
+    document.getElementById("upay-num").innerText = data.upay || "Not set";
+  });
+}
+
+function copyNumber(id) {
+  const number = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(number).then(() => {
+    alert("✅ Copied!");
   });
 }
 
@@ -211,30 +247,11 @@ function submitActivation() {
   const txn = document.getElementById("txn-id").value;
   const amount = document.getElementById("amount").value;
   if (!sender || !txn || !amount) return alert("Fill all fields");
-  db.ref("users/" + currentUID).once("value").then(uSnap => {
-    const u = uSnap.val();
-    const msg = `🟢 *Activation Request*\n👤 ${u.name}\n📞 Sender: ${sender}\n💳 Amount: ${amount}\nTxn ID: ${txn}\nUID: ${currentUID}`;
-    fetch(`https://api.telegram.org/bot7816709016:AAE3R4c3mX0fX1qE_QF2MwumGS0cAsWbpyg/sendMessage`, {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: "6374591042", text: msg, parse_mode: "Markdown" })
-    }).then(res => res.json()).then(data => {
-      if (data.ok) alert("✅ Request sent!");
-      else alert("❌ Error");
-    });
+  db.ref("activations/" + currentUID).push().set({
+    sender, txn, amount, date: new Date().toLocaleString()
   });
-}
-
-function showHistory() {
-  const list = document.getElementById("history-list");
-  list.innerHTML = "";
-  db.ref("withdraws/" + currentUID).once("value").then(snap => {
-    snap.forEach(child => {
-      const d = child.val();
-      list.innerHTML += `<li>${d.date} - ${d.method} - ${d.points} pts</li>`;
-    });
-    showView("history-view");
-  });
+  alert("✅ Activation request submitted!");
+  showView("home-view");
 }
 
 auth.onAuthStateChanged(user => {
