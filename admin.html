@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - Monetag</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <style>
+    body { background: #111; color: white; font-family: sans-serif; padding: 20px; }
+    .section { background: #222; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+    .section h2 { margin-top: 0; }
+    button { margin: 4px; padding: 5px 10px; border: none; border-radius: 5px; }
+    .approve { background: limegreen; color: black; }
+    .reject { background: crimson; color: white; }
+    .toggle { background: #008cff; color: white; }
+    .logout { background: orangered; float: right; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    td, th { border: 1px solid #444; padding: 6px; text-align: left; }
+    th { background: #333; }
+  </style>
+</head>
+<body>
+  <h1>Admin Panel</h1>
+  <button class="logout" onclick="logout()">Logout</button>
+  <div id="not-admin" style="display:none; color: red;">Access Denied. Not an admin.</div>
+
+  <div id="admin-panel" style="display:none;">
+
+    <!-- USERS -->
+    <div class="section">
+      <h2>👥 All Users</h2>
+      <table id="user-table"><thead>
+        <tr><th>Name</th><th>Email</th><th>Points</th><th>Balance</th><th>Status</th><th>Action</th></tr>
+      </thead><tbody></tbody></table>
+    </div>
+
+    <!-- ACTIVATION -->
+    <div class="section">
+      <h2>🟢 Activation Requests</h2>
+      <table id="act-table"><thead>
+        <tr><th>Name</th><th>Sender</th><th>Amount</th><th>Txn ID</th><th>Action</th></tr>
+      </thead><tbody></tbody></table>
+    </div>
+
+    <!-- WITHDRAW -->
+    <div class="section">
+      <h2>💸 Withdraw Requests</h2>
+      <table id="wd-table"><thead>
+        <tr><th>Name</th><th>Method</th><th>Number</th><th>Points</th><th>Action</th></tr>
+      </thead><tbody></tbody></table>
+    </div>
+
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDy0QLtpLlzpAagSFtBW0J01jDmPTj3dns",
+      authDomain: "rintiloveyou-6c20f.firebaseapp.com",
+      databaseURL: "https://rintiloveyou-6c20f-default-rtdb.firebaseio.com",
+      projectId: "rintiloveyou-6c20f",
+      storageBucket: "rintiloveyou-6c20f.appspot.com",
+      messagingSenderId: "544938645122",
+      appId: "1:544938645122:web:2697a58c2410e63e65c69b"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    const ADMIN_UID = "9xemsml7PCfsrsKT7t14Kd4exV92"; // ← এখানে তোমার অ্যাডমিন UID বসাও
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        const email = prompt("Enter Admin Email:");
+        const pass = prompt("Enter Password:");
+        auth.signInWithEmailAndPassword(email, pass).catch(e => alert("Auth Failed"));
+        return;
+      }
+
+      if (user.uid !== ADMIN_UID) {
+        document.getElementById("not-admin").style.display = "block";
+      } else {
+        document.getElementById("admin-panel").style.display = "block";
+        loadUsers();
+        loadActivations();
+        loadWithdraws();
+      }
+    });
+
+    function logout() {
+      auth.signOut();
+      location.reload();
+    }
+
+    function loadUsers() {
+      db.ref("users").once("value", snap => {
+        const tbody = document.querySelector("#user-table tbody");
+        tbody.innerHTML = "";
+        snap.forEach(child => {
+          const u = child.val();
+          const uid = child.key;
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td>${u.points || 0}</td>
+            <td>$${parseFloat(u.balance || 0).toFixed(2)}</td>
+            <td>${u.isActive ? "✅ Active" : "❌ Inactive"}</td>
+            <td><button class="toggle" onclick="toggleActive('${uid}', ${!u.isActive})">${u.isActive ? "Deactivate" : "Activate"}</button></td>
+          `;
+          tbody.appendChild(row);
+        });
+      });
+    }
+
+    function toggleActive(uid, status) {
+      db.ref("users/" + uid).update({ isActive: status });
+      alert("✅ Status updated");
+      loadUsers();
+    }
+
+    function loadActivations() {
+      db.ref("activations").once("value", snap => {
+        const tbody = document.querySelector("#act-table tbody");
+        tbody.innerHTML = "";
+        snap.forEach(child => {
+          const uid = child.key;
+          child.forEach(req => {
+            const r = req.val();
+            const id = req.key;
+            db.ref("users/" + uid).once("value").then(uSnap => {
+              const u = uSnap.val();
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${u.name}</td>
+                <td>${r.sender}</td>
+                <td>${r.amount}</td>
+                <td>${r.txn}</td>
+                <td><button class="approve" onclick="approveActivation('${uid}', '${id}')">Approve</button>
+                <button class="reject" onclick="rejectActivation('${uid}', '${id}')">Reject</button></td>
+              `;
+              tbody.appendChild(row);
+            });
+          });
+        });
+      });
+    }
+
+    function approveActivation(uid, id) {
+      db.ref("users/" + uid).update({ isActive: true });
+      db.ref("activations/" + uid + "/" + id).remove();
+      alert("✅ Activation Approved");
+      loadActivations(); loadUsers();
+    }
+
+    function rejectActivation(uid, id) {
+      db.ref("activations/" + uid + "/" + id).remove();
+      alert("❌ Activation Rejected");
+      loadActivations();
+    }
+
+    function loadWithdraws() {
+      db.ref("withdraws").once("value", snap => {
+        const tbody = document.querySelector("#wd-table tbody");
+        tbody.innerHTML = "";
+        snap.forEach(child => {
+          const uid = child.key;
+          child.forEach(req => {
+            const r = req.val();
+            const id = req.key;
+            db.ref("users/" + uid).once("value").then(uSnap => {
+              const u = uSnap.val();
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${u.name}</td>
+                <td>${r.method}</td>
+                <td>${r.number}</td>
+                <td>${r.points}</td>
+                <td><button class="approve" onclick="approveWithdraw('${uid}', '${id}', ${r.points})">Approve</button>
+                <button class="reject" onclick="rejectWithdraw('${uid}', '${id}')">Reject</button></td>
+              `;
+              tbody.appendChild(row);
+            });
+          });
+        });
+      });
+    }
+
+    function approveWithdraw(uid, id, points) {
+      db.ref("withdraws/" + uid + "/" + id).update({ status: "approved" });
+      db.ref("users/" + uid).update({ points: 0 });
+      alert("✅ Withdraw Approved");
+      loadWithdraws();
+    }
+
+    function rejectWithdraw(uid, id) {
+      db.ref("withdraws/" + uid + "/" + id).update({ status: "rejected" });
+      alert("❌ Withdraw Rejected");
+      loadWithdraws();
+    }
+  </script>
+</body>
+</html>
